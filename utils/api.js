@@ -89,10 +89,20 @@ function uploadVideo(filePath, formData, onProgress) {
   })
 }
 
+// 提交视频分析任务（AI 异步分析）：返回 { id }，之后用 getAnalysis 轮询状态
+function submitAnalysis(videoId, actionTypeId) {
+  return request('POST', '/api/analysis', { videoId, actionTypeId: actionTypeId || null })
+}
+
+// 查询分析任务状态：0 排队中 / 1 完成 / 2 失败（完成时带 score 和 resultJson）
+function getAnalysis(id) {
+  return request('GET', '/api/analysis/' + id)
+}
+
 // 退出登录：清本地登录态
 function logout() {
   wx.removeStorageSync('token')
   wx.removeStorageSync('userInfo')
 }
 
-module.exports = { BASE_URL, ensureLogin, request, uploadVideo, logout }
+module.exports = { BASE_URL, ensureLogin, request, uploadVideo, submitAnalysis, getAnalysis, logout }

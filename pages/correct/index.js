@@ -82,8 +82,10 @@ Page({
       .catch((err) => wx.showToast({ title: err.message, icon: 'none' }))
   },
 
-  // 跳上传练习视频页
+  // 跳上传练习视频页（携带动作 id，上传后自动按该动作发起分析）
   goUpload() {
-    wx.navigateTo({ url: '/pages/action/index?action=' + this.data.actionName })
+    wx.navigateTo({
+      url: '/pages/action/index?action=' + this.data.actionName + '&actionId=' + this.data.actionId,
+    })
   },
 })

@@ -1,5 +1,5 @@
 // pages/battle/index.js
-const { uploadVideo } = require('../../utils/api')
+const { uploadVideo, submitAnalysis } = require('../../utils/api')
 
 Page({
   data: {
@@ -46,9 +46,15 @@ Page({
       { title: this.data.videoName, duration: String(this._duration || 0) },
       (p) => this.setData({ progress: p })
     )
-      .then(() => {
+      .then((res) => {
         this.setData({ status: 'done', progress: 100 })
-        wx.showToast({ title: '上传完成', icon: 'success' })
+        // 上传成功后自动发起 AI 分析（异步任务，worker 处理）
+        if (res && res.id) {
+          submitAnalysis(res.id).catch(() => { /* 分析排队失败不阻塞上传结果 */ })
+          wx.showToast({ title: '上传完成，已加入分析队列', icon: 'success' })
+        } else {
+          wx.showToast({ title: '上传完成', icon: 'success' })
+        }
       })
       .catch((e) => {
         this.setData({ status: 'idle', progress: 0 })

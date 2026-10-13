@@ -1,5 +1,5 @@
 // pages/action/index.js
-const { uploadVideo } = require('../../utils/api')
+const { uploadVideo, submitAnalysis } = require('../../utils/api')
 
 Page({
   data: {
@@ -9,7 +9,10 @@ Page({
   },
 
   onLoad(options) {
-    this.setData({ actionName: options.action || '动作' })
+    this.setData({
+      actionName: options.action || '动作',
+      actionId: options.actionId ? Number(options.actionId) : null,
+    })
   },
 
   goBack() {
@@ -45,9 +48,15 @@ Page({
       { title: this.data.actionName + '练习视频', duration: String(this._duration || 0) },
       (p) => this.setData({ progress: p })
     )
-      .then(() => {
+      .then((res) => {
         this.setData({ status: 'done', progress: 100 })
-        wx.showToast({ title: '上传完成', icon: 'success' })
+        // 上传成功后自动发起 AI 分析（带动作 id，worker 按动作模型处理）
+        if (res && res.id) {
+          submitAnalysis(res.id, this.data.actionId).catch(() => { /* 分析排队失败不阻塞上传结果 */ })
+          wx.showToast({ title: '上传完成，已加入分析队列', icon: 'success' })
+        } else {
+          wx.showToast({ title: '上传完成', icon: 'success' })
+        }
       })
       .catch((e) => {
         this.setData({ status: 'idle', progress: 0 })
