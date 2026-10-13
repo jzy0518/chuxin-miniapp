@@ -6,6 +6,10 @@ node_modules/
 dist/
 *.local
 
+# 后端本地配置与上传文件
+backend/.env
+backend/uploads/
+
 # 日志
 logs/
 *.log
