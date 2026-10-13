@@ -51,13 +51,17 @@ router.post('/videos', auth, upload.single('video'), async (req, res) => {
   }
 })
 
-// GET /api/videos  我的视频列表
+// GET /api/videos  我的视频列表（附带每个视频最新一次分析状态）
 router.get('/videos', auth, async (req, res) => {
   try {
     const [rows] = await pool.query(
-      `SELECT id, title, file_url, duration_sec, status, created_at
-       FROM video WHERE user_id = ?
-       ORDER BY id DESC`,
+      `SELECT v.id, v.title, v.file_url, v.duration_sec, v.status, v.created_at,
+              a.status AS a_status, a.score
+       FROM video v
+       LEFT JOIN video_analysis a ON a.id =
+         (SELECT id FROM video_analysis WHERE video_id = v.id ORDER BY id DESC LIMIT 1)
+       WHERE v.user_id = ?
+       ORDER BY v.id DESC`,
       [req.user.userId]
     )
     const data = rows.map((r) => ({
@@ -67,6 +71,8 @@ router.get('/videos', auth, async (req, res) => {
       durationSec: r.duration_sec,
       status: r.status,
       createdAt: r.created_at,
+      // 最新分析状态：null=未分析 0=排队中 1=完成 2=失败
+      analysis: r.a_status == null ? null : { status: r.a_status, score: r.score },
     }))
     res.json({ code: 0, msg: 'ok', data })
   } catch (e) {

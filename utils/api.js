@@ -94,6 +94,11 @@ function submitAnalysis(videoId, actionTypeId) {
   return request('POST', '/api/analysis', { videoId, actionTypeId: actionTypeId || null })
 }
 
+// 我的视频列表（每条带最新分析状态 analysis: {status, score} | null）
+function listVideos() {
+  return request('GET', '/api/videos')
+}
+
 // 查询分析任务状态：0 排队中 / 1 完成 / 2 失败（完成时带 score 和 resultJson）
 function getAnalysis(id) {
   return request('GET', '/api/analysis/' + id)
@@ -126,4 +131,4 @@ function logout() {
   wx.removeStorageSync('userInfo')
 }
 
-module.exports = { BASE_URL, ensureLogin, request, uploadVideo, uploadAvatar, submitAnalysis, getAnalysis, logout }
+module.exports = { BASE_URL, ensureLogin, request, uploadVideo, uploadAvatar, listVideos, submitAnalysis, getAnalysis, logout }

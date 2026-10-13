@@ -76,6 +76,86 @@ page {
   color: #9aa0a6;
 }
 
+/* ========== 历史视频列表 ========== */
+.history {
+  margin-top: 40rpx;
+}
+
+.history__header {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1f2329;
+  margin-bottom: 20rpx;
+}
+
+.video-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 28rpx 28rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(31, 35, 41, 0.05);
+}
+
+.video-item__info {
+  flex: 1;
+  min-width: 0;
+  margin-right: 20rpx;
+}
+
+.video-item__title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2329;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.video-item__meta {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #9aa0a6;
+}
+
+.badge {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+}
+
+.badge--none {
+  color: #9aa0a6;
+  background: #f0f1f5;
+}
+
+.badge--queue {
+  color: #3d6bff;
+  background: #e8eeff;
+}
+
+.badge--done {
+  color: #0fae74;
+  background: #e3f7ee;
+}
+
+.badge--fail {
+  color: #e5484d;
+  background: #fdeaea;
+}
+
+.history--empty {
+  margin-top: 40rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #c0c4cc;
+}
+
 /* ========== CSS 图标 ========== */
 /* 上传箭头 */
 .i-upload {

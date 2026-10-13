@@ -1,5 +1,27 @@
 // pages/battle/index.js
-const { uploadVideo, submitAnalysis } = require('../../utils/api')
+const { uploadVideo, submitAnalysis, listVideos } = require('../../utils/api')
+
+// 分析状态徽章：null未分析 / 0排队中 / 1完成 / 2失败
+function badgeOf(analysis) {
+  if (!analysis) return { text: '未分析', cls: 'none' }
+  if (analysis.status === 0) return { text: '排队中', cls: 'queue' }
+  if (analysis.status === 1) return { text: '得分 ' + (analysis.score != null ? analysis.score : '--'), cls: 'done' }
+  return { text: '分析失败', cls: 'fail' }
+}
+
+// 时间文本：2026-10-13 15:10:27 → 10-13 15:10
+function fmtTime(t) {
+  return String(t || '').replace(/^\d{4}-/, '').slice(0, 11).trim()
+}
+
+// 时长文本：秒 → 例 1分05秒 / 42秒
+function fmtDuration(sec) {
+  const s = Number(sec) || 0
+  if (s <= 0) return ''
+  const m = Math.floor(s / 60)
+  const r = s % 60
+  return m > 0 ? m + '分' + r + '秒' : r + '秒'
+}
 
 Page({
   data: {
@@ -7,12 +29,36 @@ Page({
     status: 'idle',
     progress: 0,
     videoName: '',
+    // 历史视频列表
+    videos: [],
+    listLoading: false,
   },
 
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 1 })
     }
+    this.loadVideos()
+  },
+
+  // 拉取我的视频列表（含最新分析状态）
+  loadVideos() {
+    listVideos()
+      .then((list) => {
+        const videos = (list || []).map((v) => {
+          const b = badgeOf(v.analysis)
+          return {
+            id: v.id,
+            title: v.title,
+            timeText: fmtTime(v.createdAt),
+            durationText: fmtDuration(v.durationSec),
+            badgeText: b.text,
+            badgeCls: b.cls,
+          }
+        })
+        this.setData({ videos, listLoading: false })
+      })
+      .catch(() => this.setData({ listLoading: false })) // 后端未启动时静默失败，上传区仍可用
   },
 
   // 从相册选择视频
@@ -55,6 +101,7 @@ Page({
         } else {
           wx.showToast({ title: '上传完成', icon: 'success' })
         }
+        this.loadVideos() // 刷新历史列表
       })
       .catch((e) => {
         this.setData({ status: 'idle', progress: 0 })

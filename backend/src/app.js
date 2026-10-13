@@ -3,7 +3,7 @@ const path = require('path')
 const express = require('express')
 const multer = require('multer')
 const config = require('./config')
-const { ping } = require('./db')
+const { pool, ping } = require('./db')
 
 const app = express()
 app.use(express.json())
@@ -34,9 +34,29 @@ app.use((err, req, res, next) => {
   res.status(500).json({ code: 500, msg: err.message || '服务器错误' })
 })
 
+// 分析任务超时兜底：排队超过 30 分钟自动标失败，防止卡死任务堆积
+const ANALYZE_TIMEOUT_MIN = 30
+function startTimeoutSweeper() {
+  setInterval(async () => {
+    try {
+      const [r] = await pool.query(
+        `UPDATE video_analysis SET status = 2, error_msg = '分析超时（排队超过30分钟）'
+         WHERE status = 0 AND created_at < DATE_SUB(NOW(), INTERVAL ? MINUTE)`,
+        [ANALYZE_TIMEOUT_MIN]
+      )
+      if (r.affectedRows > 0) {
+        console.log(`[job] ${r.affectedRows} 个分析任务排队超时，已标记失败`)
+      }
+    } catch (e) {
+      console.error('[job] timeout sweeper error:', e.message)
+    }
+  }, 60 * 1000)
+}
+
 async function start() {
   await ping()
   console.log('[db] connected')
+  startTimeoutSweeper()
   app.listen(config.port, () => {
     console.log(`[server] chuxin backend listening on http://127.0.0.1:${config.port}`)
     console.log(`[server] wx login mode: ${config.wx.mockLogin ? 'mock (未配置 WX_SECRET)' : 'real'}`)

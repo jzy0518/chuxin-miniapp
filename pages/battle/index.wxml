@@ -24,5 +24,18 @@
     </block>
   </view>
 
-  <view class="hint">视频分析功能开发中，相关报告将在后续版本上线</view>
+  <view class="hint">视频分析结果展示页将在后续版本上线</view>
+
+  <!-- 历史视频列表 -->
+  <view class="history" wx:if="{{videos.length}}">
+    <view class="history__header">历史视频</view>
+    <view class="video-item" wx:for="{{videos}}" wx:key="id">
+      <view class="video-item__info">
+        <view class="video-item__title">{{item.title}}</view>
+        <view class="video-item__meta" wx:if="{{item.timeText}}">{{item.timeText}}<block wx:if="{{item.durationText}}"> · {{item.durationText}}</block></view>
+      </view>
+      <view class="badge badge--{{item.badgeCls}}">{{item.badgeText}}</view>
+    </view>
+  </view>
+  <view class="history--empty" wx:else>还没有上传过视频，选一段挥拍视频试试</view>
 </view>
