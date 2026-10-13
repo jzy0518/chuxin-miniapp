@@ -15,6 +15,7 @@
       <image class="user__avatar" src="{{user.avatarUrl}}" mode="aspectFill" />
       <view class="user__name">{{user.nickName}}</view>
     </view>
+    <view class="login__text">已纠正 {{stats.done}} · 待纠正 {{stats.todo}} · 视频 {{stats.videos}}</view>
     <button class="btn btn--logout" bindtap="logout">退出登录</button>
   </block>
 </view>
