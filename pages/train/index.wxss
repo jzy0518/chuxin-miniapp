@@ -1,0 +1,54 @@
+/*pages/train/index.wxss*/
+page {
+  height: 100%;
+  background: #f6f7fb;
+}
+
+.page {
+  height: 100vh;
+  box-sizing: border-box;
+  padding: calc(env(safe-area-inset-top) + 24rpx) 24rpx calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.page__title {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #1f2329;
+  padding: 8rpx 8rpx 28rpx;
+}
+
+/* 动作网格 */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.cell {
+  width: calc((100% - 20rpx) / 2);
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 40rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.cell__icon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 22rpx;
+  background: #eaf0ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+}
+
+.cell__name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2329;
+}

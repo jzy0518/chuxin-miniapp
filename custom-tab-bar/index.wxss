@@ -1,0 +1,138 @@
+/*custom-tab-bar/index.wxss*/
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}
+
+.tabbar__bar {
+  display: flex;
+  align-items: stretch;
+  height: 104rpx;
+  background: #ffffff;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.tabbar__safe {
+  height: env(safe-area-inset-bottom);
+  background: #ffffff;
+}
+
+.tabbar__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #9aa0a6;
+  position: relative;
+}
+
+.tabbar__icon {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tabbar__label {
+  margin-top: 4rpx;
+  font-size: 20rpx;
+  line-height: 1;
+  color: currentColor;
+}
+
+.tabbar__item--active {
+  color: #3d6bff;
+}
+
+/* ========== 中间突出的实战按钮 ========== */
+.tabbar__item--center .tabbar__icon--center {
+  width: 108rpx;
+  height: 108rpx;
+  position: absolute;
+  top: -44rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f6bff 0%, #34c0ff 100%);
+  box-shadow: 0 12rpx 28rpx rgba(63, 104, 255, 0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.tabbar__item--center .tabbar__label {
+  margin-top: 68rpx;
+  color: #9aa0a6;
+}
+
+.tabbar__item--center.tabbar__item--active .tabbar__label {
+  color: #3d6bff;
+}
+
+/* ========== 竖杠图标（训练） ========== */
+.i-train {
+  position: relative;
+  width: 44rpx;
+  height: 44rpx;
+}
+.i-train__bar {
+  position: absolute;
+  top: 19rpx;
+  left: 6rpx;
+  width: 32rpx;
+  height: 6rpx;
+  border-radius: 6rpx;
+  background: currentColor;
+}
+.i-train__w {
+  position: absolute;
+  top: 15rpx;
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: currentColor;
+}
+.i-train__w--l { left: 0; }
+.i-train__w--r { right: 0; }
+
+/* ========== 闪电图标（实战） ========== */
+.i-bolt {
+  width: 34rpx;
+  height: 48rpx;
+  background: currentColor;
+  clip-path: polygon(60% 0, 24% 54%, 46% 54%, 38% 100%, 80% 42%, 55% 42%);
+}
+
+/* ========== 人形图标（我的） ========== */
+.i-mine {
+  position: relative;
+  width: 44rpx;
+  height: 44rpx;
+}
+.i-mine__head {
+  position: absolute;
+  top: 3rpx;
+  left: 14rpx;
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  border: 4rpx solid currentColor;
+  box-sizing: border-box;
+}
+.i-mine__body {
+  position: absolute;
+  top: 25rpx;
+  left: 5rpx;
+  width: 34rpx;
+  height: 16rpx;
+  border: 4rpx solid currentColor;
+  border-bottom: none;
+  border-radius: 18rpx 18rpx 0 0;
+  box-sizing: border-box;
+}

@@ -1,0 +1,27 @@
+<!--custom-tab-bar/index.wxml-->
+<view class="tabbar">
+  <view class="tabbar__bar">
+    <view
+      wx:for="{{list}}"
+      wx:key="pagePath"
+      class="tabbar__item {{item.center ? 'tabbar__item--center' : ''}} {{selected === index ? 'tabbar__item--active' : ''}}"
+      data-index="{{index}}"
+      bindtap="switchTab"
+    >
+      <view class="tabbar__icon {{item.center ? 'tabbar__icon--center' : ''}}">
+        <view wx:if="{{item.icon === 'train'}}" class="i-train">
+          <view class="i-train__bar"></view>
+          <view class="i-train__w i-train__w--l"></view>
+          <view class="i-train__w i-train__w--r"></view>
+        </view>
+        <view wx:elif="{{item.icon === 'bolt'}}" class="i-bolt"></view>
+        <view wx:elif="{{item.icon === 'mine'}}" class="i-mine">
+          <view class="i-mine__head"></view>
+          <view class="i-mine__body"></view>
+        </view>
+      </view>
+      <text class="tabbar__label">{{item.text}}</text>
+    </view>
+  </view>
+  <view class="tabbar__safe"></view>
+</view>

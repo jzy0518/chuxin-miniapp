@@ -1,0 +1,20 @@
+<!--pages/mine/index.wxml-->
+<view class="page">
+  <!-- 未登录 -->
+  <block wx:if="{{!loggedIn}}">
+    <view class="login">
+      <view class="login__icon">👤</view>
+      <view class="login__text">登录后同步你的技术档案</view>
+      <button class="btn btn--primary" bindtap="login">微信一键登录</button>
+    </view>
+  </block>
+
+  <!-- 已登录 -->
+  <block wx:else>
+    <view class="user">
+      <image class="user__avatar" src="{{user.avatarUrl}}" mode="aspectFill" />
+      <view class="user__name">{{user.nickName}}</view>
+    </view>
+    <button class="btn btn--logout" bindtap="logout">退出登录</button>
+  </block>
+</view>

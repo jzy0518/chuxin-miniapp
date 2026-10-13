@@ -1,0 +1,32 @@
+<!--pages/action/index.wxml-->
+<view class="page">
+  <!-- 自定义返回头 -->
+  <view class="nav">
+    <view class="nav__back" bindtap="goBack">‹</view>
+    <view class="nav__title">{{actionName}} · 上传</view>
+    <view class="nav__spacer"></view>
+  </view>
+
+  <!-- 上传卡片 -->
+  <view class="upload" bindtap="chooseVideo">
+    <block wx:if="{{status === 'idle'}}">
+      <view class="upload__icon i-upload"></view>
+      <view class="upload__title">从相册上传视频</view>
+      <view class="upload__tip">上传一段{{actionName}}挥拍视频</view>
+    </block>
+
+    <block wx:elif="{{status === 'uploading'}}">
+      <view class="upload__icon i-upload"></view>
+      <view class="upload__title">上传中 {{progress}}%</view>
+      <view class="upload__bar"><view class="upload__bar-in" style="width:{{progress}}%"></view></view>
+    </block>
+
+    <block wx:else>
+      <view class="upload__icon i-done"></view>
+      <view class="upload__title">上传完成</view>
+      <view class="upload__tip">视频分析将在后续版本支持</view>
+    </block>
+  </view>
+
+  <view class="hint">视频稍后用于{{actionName}}动作分析，本阶段仅暂存视频</view>
+</view>

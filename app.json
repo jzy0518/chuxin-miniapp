@@ -1,0 +1,36 @@
+{
+  "pages": [
+    "pages/train/index",
+    "pages/action/index",
+    "pages/battle/index",
+    "pages/mine/index"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#9aa0a6",
+    "selectedColor": "#3d6bff",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/train/index",
+        "text": "动作纠正"
+      },
+      {
+        "pagePath": "pages/battle/index",
+        "text": "实战"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}
