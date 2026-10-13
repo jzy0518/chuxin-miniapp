@@ -1,5 +1,5 @@
 // pages/mine/index.js
-const { ensureLogin, request, logout, uploadAvatar } = require('../../utils/api')
+const { ensureLogin, request, logout, uploadAvatar, BASE_URL } = require('../../utils/api')
 
 Page({
   data: {
@@ -45,9 +45,15 @@ Page({
   toViewUser(u) {
     return {
       nickName: u.nick_name || u.nickName || '',
-      avatarUrl: u.avatar_url || u.avatarUrl || '',
+      avatarUrl: this.fullUrl(u.avatar_url || u.avatarUrl || ''),
       skillLevel: u.skill_level != null ? u.skill_level : 0,
     }
+  },
+
+  // 相对路径(如 /files/avatars/x.jpg)补全为完整地址——小程序 image 不认相对路径
+  fullUrl(url) {
+    if (!url) return ''
+    return /^https?:/.test(url) ? url : BASE_URL + url
   },
 
   // 登录（微信静默登录，无需用户授权资料）
@@ -73,7 +79,7 @@ Page({
     uploadAvatar(tempPath)
       .then((d) => {
         wx.hideLoading()
-        this.setData({ 'user.avatarUrl': d.avatarUrl })
+        this.setData({ 'user.avatarUrl': this.fullUrl(d.avatarUrl) })
         this.syncLocalUser()
         wx.showToast({ title: '头像已更新', icon: 'success' })
       })
