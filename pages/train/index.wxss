@@ -52,3 +52,8 @@ page {
   font-weight: 600;
   color: #1f2329;
 }
+
+.cell__progress {
+  font-size: 22rpx;
+  color: #9aa0a6;
+}

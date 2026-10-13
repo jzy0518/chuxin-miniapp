@@ -13,6 +13,7 @@
     >
       <view class="cell__icon">{{item.icon}}</view>
       <view class="cell__name">{{item.name}}</view>
+      <view class="cell__progress" wx:if="{{item.doneCount !== undefined}}">已纠正 {{item.doneCount}} · 待纠正 {{item.todoCount}}</view>
     </view>
   </view>
 </view>

@@ -47,6 +47,7 @@ Page({
   onTap(e) {
     const id = e.currentTarget.dataset.id
     const item = this.data.actions.find((a) => String(a.id) === String(id))
-    wx.navigateTo({ url: '/pages/action/index?action=' + (item ? item.name : '') })
+    if (!item) return
+    wx.navigateTo({ url: '/pages/correct/index?actionId=' + item.id + '&name=' + item.name })
   },
 })
