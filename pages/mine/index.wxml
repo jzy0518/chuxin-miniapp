@@ -12,8 +12,21 @@
   <!-- 已登录 -->
   <block wx:else>
     <view class="user">
-      <image class="user__avatar" src="{{user.avatarUrl}}" mode="aspectFill" />
-      <view class="user__name">{{user.nickName}}</view>
+      <!-- 微信官方头像组件：点击选择头像 -->
+      <button class="user__avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image wx:if="{{user.avatarUrl}}" class="user__avatar" src="{{user.avatarUrl}}" mode="aspectFill" />
+        <view wx:else class="user__avatar user__avatar--empty">＋</view>
+      </button>
+      <!-- 微信官方昵称组件：点击输入昵称，失焦自动保存 -->
+      <input
+        class="user__nick-input"
+        type="nickname"
+        value="{{user.nickName}}"
+        placeholder="点击设置昵称"
+        bindinput="onNickInput"
+        bindblur="onNickSave"
+      />
+      <view class="user__hint">点头像换头像 · 点昵称改名</view>
     </view>
     <view class="login__text">已纠正 {{stats.done}} · 待纠正 {{stats.todo}} · 视频 {{stats.videos}}</view>
     <button class="btn btn--logout" bindtap="logout">退出登录</button>

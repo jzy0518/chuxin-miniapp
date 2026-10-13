@@ -1,9 +1,31 @@
 // 用户资料与技术画像
+const fs = require('fs')
+const path = require('path')
 const express = require('express')
+const multer = require('multer')
 const { pool } = require('../db')
+const config = require('../config')
 const auth = require('../middleware/auth')
 
 const router = express.Router()
+
+// 头像上传目录（uploads/avatars）
+const avatarDir = path.join(config.uploadDir, 'avatars')
+fs.mkdirSync(avatarDir, { recursive: true })
+const avatarUpload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, avatarDir),
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname) || '.png'
+      cb(null, Date.now() + '_' + Math.round(Math.random() * 1e6) + ext)
+    },
+  }),
+  limits: { fileSize: 2 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype && file.mimetype.startsWith('image/')) return cb(null, true)
+    cb(new Error('只支持图片文件'))
+  },
+})
 
 // GET /api/user/me  我的页面：用户信息 + 画像统计
 router.get('/user/me', auth, async (req, res) => {
@@ -62,6 +84,21 @@ router.put('/user/me', auth, async (req, res) => {
     )
     res.json({ code: 0, msg: 'ok', data: { nick_name: nick, avatar_url: avatar, skill_level: level } })
   } catch (e) {
+    res.status(500).json({ code: 500, msg: e.message })
+  }
+})
+
+// POST /api/user/avatar  上传头像（微信 chooseAvatar 返回的临时图片）
+router.post('/user/avatar', auth, avatarUpload.single('avatar'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ code: 400, msg: '缺少头像文件' })
+  }
+  const url = '/files/avatars/' + req.file.filename
+  try {
+    await pool.query('UPDATE `user` SET avatar_url = ? WHERE id = ?', [url, req.user.userId])
+    res.json({ code: 0, msg: 'ok', data: { avatarUrl: url } })
+  } catch (e) {
+    fs.unlink(req.file.path, () => {})
     res.status(500).json({ code: 500, msg: e.message })
   }
 })

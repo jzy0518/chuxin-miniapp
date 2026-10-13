@@ -99,10 +99,31 @@ function getAnalysis(id) {
   return request('GET', '/api/analysis/' + id)
 }
 
+// 上传头像：filePath 为微信 chooseAvatar 返回的临时图片路径
+function uploadAvatar(filePath) {
+  return ensureLogin().then(({ token }) => {
+    return new Promise((resolve, reject) => {
+      wx.uploadFile({
+        url: BASE_URL + '/api/user/avatar',
+        filePath,
+        name: 'avatar',
+        header: { Authorization: 'Bearer ' + token },
+        success: (r) => {
+          let data = null
+          try { data = JSON.parse(r.data) } catch (e) { /* 忽略解析错误 */ }
+          if (data && data.code === 0) resolve(data.data)
+          else reject(new Error((data && data.msg) || '头像上传失败'))
+        },
+        fail: () => reject(new Error('头像上传失败，请检查网络')),
+      })
+    })
+  })
+}
+
 // 退出登录：清本地登录态
 function logout() {
   wx.removeStorageSync('token')
   wx.removeStorageSync('userInfo')
 }
 
-module.exports = { BASE_URL, ensureLogin, request, uploadVideo, submitAnalysis, getAnalysis, logout }
+module.exports = { BASE_URL, ensureLogin, request, uploadVideo, uploadAvatar, submitAnalysis, getAnalysis, logout }

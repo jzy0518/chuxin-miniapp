@@ -1,5 +1,5 @@
 // pages/mine/index.js
-const { ensureLogin, request, logout } = require('../../utils/api')
+const { ensureLogin, request, logout, uploadAvatar } = require('../../utils/api')
 
 Page({
   data: {
@@ -63,6 +63,49 @@ Page({
         wx.hideLoading()
         wx.showToast({ title: e.message, icon: 'none' })
       })
+  },
+
+  // 选择新头像（微信官方组件）：上传到后端并更新资料
+  onChooseAvatar(e) {
+    const tempPath = e.detail.avatarUrl
+    if (!tempPath) return
+    wx.showLoading({ title: '上传头像' })
+    uploadAvatar(tempPath)
+      .then((d) => {
+        wx.hideLoading()
+        this.setData({ 'user.avatarUrl': d.avatarUrl })
+        this.syncLocalUser()
+        wx.showToast({ title: '头像已更新', icon: 'success' })
+      })
+      .catch((err) => {
+        wx.hideLoading()
+        wx.showToast({ title: err.message, icon: 'none' })
+      })
+  },
+
+  // 昵称输入实时更新页面显示
+  onNickInput(e) {
+    this.setData({ 'user.nickName': e.detail.value })
+  },
+
+  // 昵称失焦保存
+  onNickSave(e) {
+    const nickName = (e.detail.value || '').trim()
+    request('PUT', '/api/user/me', { nickName })
+      .then(() => {
+        this.setData({ 'user.nickName': nickName })
+        this.syncLocalUser()
+        wx.showToast({ title: '昵称已保存', icon: 'success' })
+      })
+      .catch((err) => wx.showToast({ title: err.message, icon: 'none' }))
+  },
+
+  // 把最新昵称/头像同步进本地缓存
+  syncLocalUser() {
+    const local = wx.getStorageSync('userInfo') || {}
+    local.nick_name = this.data.user.nickName
+    local.avatar_url = this.data.user.avatarUrl
+    wx.setStorageSync('userInfo', local)
   },
 
   // 退出登录
