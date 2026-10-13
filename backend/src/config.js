@@ -26,4 +26,7 @@ module.exports = {
 
   uploadDir: process.env.UPLOAD_DIR || path.join(__dirname, '..', 'uploads'),
   uploadMaxMB: Number(process.env.UPLOAD_MAX_MB) || 200,
+
+  // AI 分析 worker 回调密钥（Python 推理服务回调结果时携带）
+  workerKey: process.env.ANALYSIS_WORKER_KEY || '',
 }

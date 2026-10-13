@@ -92,11 +92,15 @@ CREATE TABLE IF NOT EXISTS `video_analysis` (
   `id`           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `video_id`     BIGINT UNSIGNED NOT NULL,
   `action_type_id` SMALLINT UNSIGNED NULL,
+  `status`       TINYINT NOT NULL DEFAULT 0 COMMENT '0=排队中 1=完成 2=失败',
   `score`        TINYINT NULL COMMENT '动作得分 0-100',
   `result_json`  JSON NULL COMMENT 'AI 分析结果',
+  `error_msg`    VARCHAR(255) NULL COMMENT '失败原因',
   `created_at`   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_video` (`video_id`),
+  KEY `idx_status` (`status`),
   CONSTRAINT `fk_analysis_video` FOREIGN KEY (`video_id`) REFERENCES `video`(`id`)
 ) ENGINE=InnoDB COMMENT='视频动作分析';
 

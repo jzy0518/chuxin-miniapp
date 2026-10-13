@@ -15,6 +15,7 @@ app.use('/files', express.static(config.uploadDir))
 app.use('/api', require('./routes/login'))
 app.use('/api', require('./routes/user'))
 app.use('/api', require('./routes/action'))
+app.use('/api', require('./routes/analysis'))
 app.use('/api', require('./routes/video'))
 
 // 健康检查
