@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `action_type` (
   UNIQUE KEY `uk_code` (`code`)
 ) ENGINE=InnoDB COMMENT='动作类型';
 
-INSERT INTO `action_type` (`code`, `name`, `category`, `icon`, `sort_order`) VALUES
+INSERT IGNORE INTO `action_type` (`code`, `name`, `category`, `icon`, `sort_order`) VALUES
   ('clear',      '高远球', '后场', '🏸', 10),
   ('smash',      '杀球',   '后场', '⚡', 20),
   ('drop',       '吊球',   '后场', '🎾', 30),

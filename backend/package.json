@@ -4,6 +4,9 @@
   "private": true,
   "description": "羽毛球动作纠正小程序后端",
   "main": "src/app.js",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node src/app.js",
     "dev": "node --watch src/app.js",
