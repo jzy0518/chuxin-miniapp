@@ -3,12 +3,12 @@ const { request } = require('../../utils/api')
 
 // 静态兜底：服务器未启动时仍展示基本动作清单
 const FALLBACK_ACTIONS = [
-  { id: 'clear', icon: '🏸', name: '正手高远球' },
-  { id: 'backclear', icon: '🪃', name: '反手高远' },
-  { id: 'smash', icon: '⚡', name: '杀球' },
-  { id: 'drop', icon: '🎾', name: '吊球' },
-  { id: 'lift', icon: '�', name: '挑球' },
-  { id: 'net', icon: '�', name: '放网' },
+  { id: 'clear', icon: '🏸', name: '正手高远球', category: '后场' },
+  { id: 'backclear', icon: '🪃', name: '反手高远', category: '后场' },
+  { id: 'smash', icon: '⚡', name: '杀球', category: '后场' },
+  { id: 'drop', icon: '🎾', name: '吊球', category: '后场' },
+  { id: 'lift', icon: '🔄', name: '挑球', category: '网前' },
+  { id: 'net', icon: '🕊', name: '放网', category: '网前' },
 ]
 
 Page({
@@ -33,6 +33,7 @@ Page({
               id: a.id,
               icon: a.icon,
               name: a.name,
+              category: a.category,
               doneCount: a.doneCount,
               todoCount: a.todoCount,
             })),

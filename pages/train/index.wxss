@@ -56,6 +56,11 @@ page {
   flex-shrink: 0;
 }
 
+/* 网前动作图标配色 */
+.list-item__icon--net {
+  background: #e6f7ee;
+}
+
 .list-item__body {
   flex: 1;
   min-width: 0;
@@ -74,8 +79,16 @@ page {
 }
 
 .list-item__arrow {
-  font-size: 36rpx;
-  color: #c6cad2;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: #eef2ff;
+  color: #3d6bff;
+  font-size: 32rpx;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
@@ -86,13 +99,14 @@ page {
 }
 
 .footer__btn {
-  background: linear-gradient(135deg, #4a90e2, #5b7fff);
+  background: #2b4cd8;
   color: #ffffff;
   text-align: center;
   font-size: 30rpx;
   font-weight: 600;
   border-radius: 48rpx;
   padding: 26rpx 0;
+  box-shadow: 0 8rpx 20rpx rgba(43, 76, 216, 0.25);
 }
 
 .footer__tip {

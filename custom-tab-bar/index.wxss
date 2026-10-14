@@ -68,7 +68,8 @@
 
 .tabbar__item--center .tabbar__label {
   margin-top: 68rpx;
-  color: #9aa0a6;
+  color: #5a6068;
+  font-weight: 600;
 }
 
 .tabbar__item--center.tabbar__item--active .tabbar__label {

@@ -1,7 +1,7 @@
 <!--pages/train/index.wxml-->
 <view class="page">
-  <view class="page__title">动作分类检测</view>
-  <view class="page__subtitle">选择一个动作分类，管理纠正点或开始检测</view>
+  <view class="page__title">今天练什么？</view>
+  <view class="page__subtitle">选择一个动作，管理纠正点或开始检测</view>
 
   <!-- 动作分类列表 -->
   <view class="list">
@@ -12,7 +12,7 @@
       data-id="{{item.id}}"
       bindtap="onTap"
     >
-      <view class="list-item__icon">{{item.icon}}</view>
+      <view class="list-item__icon {{item.category === '网前' ? 'list-item__icon--net' : ''}}">{{item.icon}}</view>
       <view class="list-item__body">
         <view class="list-item__name">{{item.name}}</view>
         <view class="list-item__meta" wx:if="{{item.doneCount !== undefined}}">已纠正 {{item.doneCount}} · 待纠正 {{item.todoCount}}</view>
