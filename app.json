@@ -19,7 +19,7 @@
     "list": [
       {
         "pagePath": "pages/train/index",
-        "text": "动作纠正"
+        "text": "动作分类检测"
       },
       {
         "pagePath": "pages/battle/index",

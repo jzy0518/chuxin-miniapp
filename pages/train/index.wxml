@@ -1,19 +1,30 @@
 <!--pages/train/index.wxml-->
 <view class="page">
-  <view class="page__title">动作纠正</view>
+  <view class="page__title">动作分类检测</view>
+  <view class="page__subtitle">选择一个动作分类，管理纠正点或开始检测</view>
 
-  <!-- 动作网格清单 -->
-  <view class="grid">
+  <!-- 动作分类列表 -->
+  <view class="list">
     <view
       wx:for="{{actions}}"
       wx:key="id"
-      class="cell"
+      class="list-item"
       data-id="{{item.id}}"
       bindtap="onTap"
     >
-      <view class="cell__icon">{{item.icon}}</view>
-      <view class="cell__name">{{item.name}}</view>
-      <view class="cell__progress" wx:if="{{item.doneCount !== undefined}}">已纠正 {{item.doneCount}} · 待纠正 {{item.todoCount}}</view>
+      <view class="list-item__icon">{{item.icon}}</view>
+      <view class="list-item__body">
+        <view class="list-item__name">{{item.name}}</view>
+        <view class="list-item__meta" wx:if="{{item.doneCount !== undefined}}">已纠正 {{item.doneCount}} · 待纠正 {{item.todoCount}}</view>
+        <view class="list-item__meta" wx:else>暂无纠正点 · 开始检测</view>
+      </view>
+      <view class="list-item__arrow">›</view>
     </view>
+  </view>
+
+  <!-- 底部主操作 -->
+  <view class="footer">
+    <view class="footer__btn" bindtap="goDetect">开始动作检测</view>
+    <view class="footer__tip">上传挥拍视频，AI 识别动作并进行分类检测</view>
   </view>
 </view>
