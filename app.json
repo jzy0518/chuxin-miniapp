@@ -1,7 +1,6 @@
 {
   "pages": [
     "pages/train/index",
-    "pages/correct/index",
     "pages/action/index",
     "pages/battle/index",
     "pages/mine/index"

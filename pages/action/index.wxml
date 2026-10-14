@@ -24,9 +24,9 @@
     <block wx:else>
       <view class="upload__icon i-done"></view>
       <view class="upload__title">上传完成</view>
-      <view class="upload__tip">视频分析将在后续版本支持</view>
+      <view class="upload__tip">已提交 AI 分析队列，结果页即将上线</view>
     </block>
   </view>
 
-  <view class="hint">视频稍后用于{{actionName}}动作分析，本阶段仅暂存视频</view>
+  <view class="hint">视频将自动进行{{actionName}}动作分析，识别该动作的体态与击球细节</view>
 </view>

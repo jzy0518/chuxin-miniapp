@@ -49,6 +49,9 @@ Page({
     const id = e.currentTarget.dataset.id
     const item = this.data.actions.find((a) => String(a.id) === String(id))
     if (!item) return
-    wx.navigateTo({ url: '/pages/correct/index?actionId=' + item.id + '&name=' + item.name })
+    // 直接进入该动作的上传检测页
+    wx.navigateTo({
+      url: '/pages/action/index?action=' + encodeURIComponent(item.name) + '&actionId=' + item.id,
+    })
   },
 })

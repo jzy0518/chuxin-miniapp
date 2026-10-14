@@ -73,12 +73,6 @@ page {
   color: #1f2329;
 }
 
-.list-item__meta {
-  font-size: 22rpx;
-  color: #9aa0a6;
-  margin-top: 8rpx;
-}
-
 .list-item__arrow {
   width: 48rpx;
   height: 48rpx;
