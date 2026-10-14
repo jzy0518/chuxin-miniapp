@@ -9,7 +9,8 @@ page {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: calc(env(safe-area-inset-top) + 24rpx) 24rpx 0;
+  /* 底部预留 160rpx = tabBar 高度(104rpx) + 中间凸起按钮(44rpx) + 间距 */
+  padding: calc(env(safe-area-inset-top) + 24rpx) 24rpx calc(160rpx + env(safe-area-inset-bottom));
 }
 
 .page__title {
@@ -92,10 +93,9 @@ page {
   flex-shrink: 0;
 }
 
-/* 底部主操作 */
+/* 底部主操作（页面已预留 tabBar 空间，这里只保留与列表的间距） */
 .footer {
-  padding: 20rpx calc(24rpx + env(safe-area-inset-bottom)) calc(24rpx + env(safe-area-inset-bottom));
-  padding-left: 24rpx;
+  padding: 20rpx 0 0;
 }
 
 .footer__btn {
