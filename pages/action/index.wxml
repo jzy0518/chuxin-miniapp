@@ -7,26 +7,32 @@
     <view class="nav__spacer"></view>
   </view>
 
-  <!-- 上传卡片 -->
-  <view class="upload" bindtap="chooseVideo">
+  <!-- 可折叠拍摄说明（内容在 index.js 的 tips 里修改） -->
+  <view class="tips">
+    <view class="tips__header" bindtap="toggleTips">
+      <view class="tips__title">拍摄说明</view>
+      <view class="tips__arrow {{tipsExpanded ? 'tips__arrow--open' : ''}}">▾</view>
+    </view>
+    <view class="tips__body" wx:if="{{tipsExpanded}}">
+      <view class="tips__line" wx:for="{{tips}}" wx:key="*this">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 底部固定上传区 -->
+  <view class="footer">
     <block wx:if="{{status === 'idle'}}">
-      <view class="upload__icon i-upload"></view>
-      <view class="upload__title">从相册上传视频</view>
-      <view class="upload__tip">上传一段{{actionName}}挥拍视频</view>
+      <view class="footer__btn" bindtap="chooseVideo">上传{{actionName}}挥拍视频</view>
+      <view class="footer__tip">点击后从手机相册选择一段视频</view>
     </block>
 
     <block wx:elif="{{status === 'uploading'}}">
-      <view class="upload__icon i-upload"></view>
-      <view class="upload__title">上传中 {{progress}}%</view>
-      <view class="upload__bar"><view class="upload__bar-in" style="width:{{progress}}%"></view></view>
+      <view class="footer__bar"><view class="footer__bar-in" style="width:{{progress}}%"></view></view>
+      <view class="footer__tip">正在上传 {{progress}}%</view>
     </block>
 
     <block wx:else>
-      <view class="upload__icon i-done"></view>
-      <view class="upload__title">上传完成</view>
-      <view class="upload__tip">已提交 AI 分析队列，结果页即将上线</view>
+      <view class="footer__done">✓ 上传完成，已加入 AI 分析队列</view>
+      <view class="footer__tip">结果页即将上线，可返回选择其他动作</view>
     </block>
   </view>
-
-  <view class="hint">视频将自动进行{{actionName}}动作分析，识别该动作的体态与击球细节</view>
 </view>

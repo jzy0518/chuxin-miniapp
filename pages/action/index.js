@@ -6,6 +6,13 @@ Page({
     actionName: '',
     status: 'idle',
     progress: 0,
+    tipsExpanded: true, // 拍摄说明默认展开
+    // ↓ 拍摄说明内容在这里修改，每行一条
+    tips: [
+      '示例说明第 1 条：请正对手机镜头，完整拍摄一次挥拍动作。',
+      '示例说明第 2 条：光线充足、背景简单，识别效果更好。',
+      '示例说明第 3 条：视频时长建议 3~15 秒。',
+    ],
   },
 
   onLoad(options) {
@@ -17,6 +24,11 @@ Page({
 
   goBack() {
     wx.navigateBack()
+  },
+
+  // 展开/收起拍摄说明
+  toggleTips() {
+    this.setData({ tipsExpanded: !this.data.tipsExpanded })
   },
 
   // 从相册选择视频

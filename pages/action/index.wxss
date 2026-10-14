@@ -7,7 +7,7 @@ page {
 .page {
   min-height: 100vh;
   box-sizing: border-box;
-  padding: 0 40rpx calc(env(safe-area-inset-bottom) + 40rpx);
+  padding: 0 24rpx calc(220rpx + env(safe-area-inset-bottom));
 }
 
 /* 自定义返回头 */
@@ -36,114 +36,100 @@ page {
   width: 72rpx;
 }
 
-/* 上传卡片 */
-.upload {
-  margin-top: 40rpx;
-  background: linear-gradient(135deg, #4f6bff 0%, #34c0ff 100%);
+/* ========== 可折叠拍摄说明 ========== */
+.tips {
+  background: #ffffff;
   border-radius: 24rpx;
-  padding: 80rpx 40rpx;
+  padding: 28rpx;
+}
+
+.tips__header {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+}
+
+.tips__title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2329;
+}
+
+.tips__arrow {
+  color: #9aa0a6;
+  font-size: 24rpx;
+  transition: transform 0.2s;
+}
+
+.tips__arrow--open {
+  transform: rotate(180deg);
+}
+
+.tips__body {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #f0f2f7;
+}
+
+.tips__line {
+  font-size: 26rpx;
+  color: #5a6068;
+  line-height: 1.7;
+  margin-bottom: 8rpx;
+}
+
+.tips__line:last-child {
+  margin-bottom: 0;
+}
+
+/* ========== 底部固定上传区 ========== */
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 20rpx 24rpx calc(24rpx + env(safe-area-inset-bottom));
+  background: #f6f7fb;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.04);
+}
+
+.footer__btn {
+  background: linear-gradient(135deg, #4f6bff 0%, #34c0ff 100%);
   color: #ffffff;
   text-align: center;
-  box-shadow: 0 16rpx 36rpx rgba(63, 104, 255, 0.3);
+  font-size: 30rpx;
+  font-weight: 600;
+  border-radius: 48rpx;
+  padding: 26rpx 0;
+  box-shadow: 0 8rpx 20rpx rgba(79, 107, 255, 0.3);
 }
 
-.upload__icon {
-  width: 108rpx;
-  height: 108rpx;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 28rpx;
-}
-
-.upload__title {
-  font-size: 36rpx;
-  font-weight: 700;
-}
-
-.upload__tip {
-  font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.85);
+.footer__tip {
+  font-size: 22rpx;
+  color: #9aa0a6;
+  text-align: center;
   margin-top: 16rpx;
 }
 
-/* 进度条 */
-.upload__bar {
-  width: 100%;
+.footer__bar {
   height: 12rpx;
   border-radius: 999rpx;
-  background: rgba(255, 255, 255, 0.25);
+  background: #e8ecf5;
   overflow: hidden;
-  margin-top: 36rpx;
+  margin: 12rpx 0;
 }
 
-.upload__bar-in {
+.footer__bar-in {
   height: 100%;
-  background: #ffffff;
+  background: linear-gradient(90deg, #4f6bff, #34c0ff);
   border-radius: 999rpx;
   transition: width 0.3s;
 }
 
-.hint {
+.footer__done {
   text-align: center;
-  font-size: 22rpx;
-  color: #9aa0a6;
-  margin-top: 32rpx;
-}
-
-/* 上传图标（CSS绘制箭头） */
-.i-upload {
-  position: relative;
-  width: 56rpx;
-  height: 56rpx;
-  color: currentColor;
-}
-.i-upload::before {
-  content: '';
-  position: absolute;
-  left: 8rpx;
-  bottom: 4rpx;
-  width: 40rpx;
-  height: 14rpx;
-  border: 6rpx solid currentColor;
-  border-top: none;
-  border-radius: 0 0 6rpx 6rpx;
-  box-sizing: border-box;
-}
-.i-upload::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 2rpx;
-  width: 0;
-  height: 0;
-  border-left: 12rpx solid transparent;
-  border-right: 12rpx solid transparent;
-  border-bottom: 24rpx solid currentColor;
-  transform: translateX(-50%);
-}
-
-/* 完成对勾 */
-.i-done {
-  position: relative;
-  width: 56rpx;
-  height: 56rpx;
-  color: currentColor;
-}
-.i-done::after {
-  content: '';
-  position: absolute;
-  left: 8rpx;
-  top: 12rpx;
-  width: 28rpx;
-  height: 16rpx;
-  border-left: 8rpx solid currentColor;
-  border-bottom: 8rpx solid currentColor;
-  transform: rotate(-45deg);
-  box-sizing: border-box;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2329;
+  padding: 26rpx 0 0;
 }
