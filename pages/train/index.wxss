@@ -92,26 +92,3 @@ page {
   justify-content: center;
   flex-shrink: 0;
 }
-
-/* 底部主操作（页面已预留 tabBar 空间，这里只保留与列表的间距） */
-.footer {
-  padding: 20rpx 0 0;
-}
-
-.footer__btn {
-  background: #2b4cd8;
-  color: #ffffff;
-  text-align: center;
-  font-size: 30rpx;
-  font-weight: 600;
-  border-radius: 48rpx;
-  padding: 26rpx 0;
-  box-shadow: 0 8rpx 20rpx rgba(43, 76, 216, 0.25);
-}
-
-.footer__tip {
-  font-size: 22rpx;
-  color: #9aa0a6;
-  text-align: center;
-  margin-top: 16rpx;
-}

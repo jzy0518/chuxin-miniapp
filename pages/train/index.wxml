@@ -21,10 +21,4 @@
       <view class="list-item__arrow">›</view>
     </view>
   </view>
-
-  <!-- 底部主操作 -->
-  <view class="footer">
-    <view class="footer__btn" bindtap="goDetect">开始动作检测</view>
-    <view class="footer__tip">上传挥拍视频，AI 识别动作并进行分类检测</view>
-  </view>
 </view>

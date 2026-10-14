@@ -51,9 +51,4 @@ Page({
     if (!item) return
     wx.navigateTo({ url: '/pages/correct/index?actionId=' + item.id + '&name=' + item.name })
   },
-
-  // 底部主操作：开始动作检测 → 前往实战上传视频
-  goDetect() {
-    wx.switchTab({ url: '/pages/battle/index' })
-  },
 })
