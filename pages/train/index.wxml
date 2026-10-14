@@ -12,7 +12,7 @@
       data-id="{{item.id}}"
       bindtap="onTap"
     >
-      <view class="list-item__icon {{item.category === '网前' ? 'list-item__icon--net' : ''}}">{{item.icon}}</view>
+      <view class="list-item__icon {{item.category === '网前' ? 'list-item__icon--net' : ''}} i-{{item.code || item.id}}"></view>
       <view class="list-item__body">
         <view class="list-item__name">{{item.name}}</view>
       </view>

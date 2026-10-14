@@ -31,6 +31,7 @@ Page({
           this.setData({
             actions: list.map((a) => ({
               id: a.id,
+              code: a.code,
               icon: a.icon,
               name: a.name,
               category: a.category,
