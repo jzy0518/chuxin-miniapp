@@ -15,6 +15,7 @@ router.get('/actions', auth, async (req, res) => {
        FROM action_type a
        LEFT JOIN action_correct c
          ON c.action_type_id = a.id AND c.user_id = ?
+       WHERE a.is_active = 1
        GROUP BY a.id
        ORDER BY a.sort_order`,
       [req.user.userId]

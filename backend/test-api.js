@@ -113,7 +113,7 @@ async function main() {
   // 6. 动作列表
   {
     const { status, data } = await req('GET', '/api/actions', { token })
-    const ok = status === 200 && data.code === 0 && Array.isArray(data.data) && data.data.length === 9
+    const ok = status === 200 && data.code === 0 && Array.isArray(data.data) && data.data.length === 6
     log(ok, '动作列表 GET /api/actions', ok ? `共 ${data.data.length} 个动作` : JSON.stringify(data))
   }
 

@@ -35,21 +35,23 @@ CREATE TABLE IF NOT EXISTS `action_type` (
   `category`    VARCHAR(32) NOT NULL COMMENT '分组：后场/网前/步法等',
   `icon`        VARCHAR(16) NOT NULL DEFAULT '' COMMENT '图标 emoji',
   `sort_order`  INT NOT NULL DEFAULT 0 COMMENT '排序',
+  `is_active`   TINYINT NOT NULL DEFAULT 1 COMMENT '是否启用：1启用/0停用',
   `created_at`  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_code` (`code`)
 ) ENGINE=InnoDB COMMENT='动作类型';
 
-INSERT IGNORE INTO `action_type` (`code`, `name`, `category`, `icon`, `sort_order`) VALUES
-  ('clear',      '高远球', '后场', '🏸', 10),
-  ('smash',      '杀球',   '后场', '⚡', 20),
-  ('drop',       '吊球',   '后场', '🎾', 30),
-  ('net',        '放网',   '网前', '🕊', 40),
-  ('lift',       '挑球',   '网前', '🔄', 50),
-  ('push',       '推球',   '网前', '🎯', 60),
-  ('sidle',      '并步',   '步法', '👟', 70),
-  ('cross',      '交叉步', '步法', '🦶', 80),
-  ('starts',     '启动步', '步法', '🚀', 90);
+INSERT IGNORE INTO `action_type` (`code`, `name`, `category`, `icon`, `sort_order`, `is_active`) VALUES
+  ('clear',      '正手高远球', '后场', '🏸', 10, 1),
+  ('backclear',  '反手高远',   '后场', '🪃', 15, 1),
+  ('smash',      '杀球',       '后场', '⚡', 20, 1),
+  ('drop',       '吊球',       '后场', '🎾', 30, 1),
+  ('net',        '放网',       '网前', '🕊', 40, 1),
+  ('lift',       '挑球',       '网前', '🔄', 50, 1),
+  ('push',       '推球',       '网前', '🎯', 60, 0),
+  ('sidle',      '并步',       '步法', '👟', 70, 0),
+  ('cross',      '交叉步',     '步法', '🦶', 80, 0),
+  ('starts',     '启动步',     '步法', '🚀', 90, 0);
 
 -- -------------------------------------------------------------
 -- 3. 动作纠正记录（用户对某个动作的纠正点进度）
