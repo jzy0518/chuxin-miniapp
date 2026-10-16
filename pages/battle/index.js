@@ -1,5 +1,5 @@
 // pages/battle/index.js
-const { uploadVideo, submitAnalysis, listVideos } = require('../../utils/api')
+const { uploadVideo, uploadVideoThumb, submitAnalysis, listVideos } = require('../../utils/api')
 
 // 分析状态徽章：null未分析 / 0排队中 / 1完成 / 2失败
 function badgeOf(analysis) {
@@ -43,7 +43,7 @@ Page({
 
   // 拉取我的视频列表（含最新分析状态）
   loadVideos() {
-    listVideos()
+    listVideos(2) // 实战页只显示本模块(实战)的历史视频
       .then((list) => {
         const videos = (list || []).map((v) => {
           const b = badgeOf(v.analysis)
@@ -74,6 +74,7 @@ Page({
         const videoName = (file && file.name) || '现场视频'
         this._filePath = file.tempFilePath
         this._duration = (file && file.duration) || 0
+        this._thumbPath = (file && file.thumbTempFilePath) || ''
         this.setData({ videoName })
         this.upload()
       },
@@ -89,14 +90,15 @@ Page({
     this.setData({ status: 'uploading', progress: 0 })
     uploadVideo(
       this._filePath,
-      { title: this.data.videoName, duration: String(this._duration || 0) },
+      { title: this.data.videoName, duration: String(this._duration || 0), source: '2' },
       (p) => this.setData({ progress: p })
     )
       .then((res) => {
         this.setData({ status: 'done', progress: 100 })
-        // 上传成功后自动发起 AI 分析（异步任务，worker 处理）
+        // 上传成功后自动发起 AI 分析 + 上传缩略图（实战类视频 source=2）
         if (res && res.id) {
           submitAnalysis(res.id).catch(() => { /* 分析排队失败不阻塞上传结果 */ })
+          if (this._thumbPath) uploadVideoThumb(res.id, this._thumbPath).catch(() => { /* 缩略图失败不阻塞 */ })
           wx.showToast({ title: '上传完成，已加入分析队列', icon: 'success' })
         } else {
           wx.showToast({ title: '上传完成', icon: 'success' })

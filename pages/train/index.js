@@ -50,7 +50,7 @@ Page({
     const id = e.currentTarget.dataset.id
     const item = this.data.actions.find((a) => String(a.id) === String(id))
     if (!item) return
-    // 直接进入该动作的上传检测页（参数不要 encodeURIComponent，小程序自动解码，编码会变乱码）
+    // 直接进入该动作的上传检测页（参数不要 encodeURIComponent，小程序会把编码后的内容再处理导致乱码）
     wx.navigateTo({
       url: '/pages/action/index?action=' + item.name + '&actionId=' + item.id,
     })

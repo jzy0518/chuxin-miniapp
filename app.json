@@ -3,7 +3,11 @@
     "pages/train/index",
     "pages/action/index",
     "pages/battle/index",
-    "pages/mine/index"
+    "pages/mine/index",
+    "pages/report/detail",
+    "pages/videos/index",
+    "pages/settings/index",
+    "pages/reports/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -31,6 +35,5 @@
     ]
   },
   "style": "v2",
-  "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "sitemapLocation": "sitemap.json"
 }

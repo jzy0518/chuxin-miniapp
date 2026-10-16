@@ -1,0 +1,76 @@
+/*pages/settings/index.wxss*/
+page {
+  height: 100%;
+  background: #f6f7fb;
+}
+
+.page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 0 24rpx calc(32rpx + env(safe-area-inset-bottom));
+}
+
+/* 自定义返回头（与 videos 页一致） */
+.nav {
+  padding: calc(env(safe-area-inset-top) + 16rpx) 0 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav__back {
+  width: 72rpx;
+  height: 72rpx;
+  line-height: 64rpx;
+  font-size: 56rpx;
+  color: #1f2329;
+}
+
+.nav__title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1f2329;
+}
+
+.nav__spacer {
+  width: 72rpx;
+}
+
+/* 分组标题 */
+.group {
+  padding: 0 8rpx 16rpx;
+  font-size: 26rpx;
+  color: #9aa0a6;
+}
+
+/* 设置卡片 */
+.card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 0 24rpx;
+  margin-bottom: 24rpx;
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 96rpx;
+  padding: 24rpx 0;
+  box-sizing: border-box;
+}
+
+.row + .row {
+  border-top: 1rpx solid #f0f1f5;
+}
+
+.row__label {
+  font-size: 28rpx;
+  color: #1f2329;
+}
+
+.row__value {
+  font-size: 26rpx;
+  color: #9aa0a6;
+}

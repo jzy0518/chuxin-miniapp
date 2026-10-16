@@ -1,0 +1,59 @@
+<!--pages/settings/index.wxml-->
+<view class="page">
+
+  <!-- 自定义返回头 -->
+  <view class="nav">
+    <view class="nav__back" bindtap="goBack">‹</view>
+    <view class="nav__title">设置</view>
+    <view class="nav__spacer"></view>
+  </view>
+
+  <!-- 账号 -->
+  <view class="group">账号</view>
+  <view class="card">
+    <view class="row row--first row--last" bindtap="onLogout">
+      <text class="row__label">退出登录</text>
+      <text class="row__value">›</text>
+    </view>
+  </view>
+
+  <!-- 数据 -->
+  <view class="group">数据</view>
+  <view class="card">
+    <view class="row row--first row--last" bindtap="clearData">
+      <text class="row__label">清空我的数据</text>
+      <text class="row__value">›</text>
+    </view>
+  </view>
+
+  <!-- 隐私与协议 -->
+  <view class="group">隐私与协议</view>
+  <view class="card">
+    <view class="row row--first" data-key="privacy" bindtap="showDialog">
+      <text class="row__label">隐私政策</text>
+      <text class="row__value">›</text>
+    </view>
+    <view class="row" data-key="agreement" bindtap="showDialog">
+      <text class="row__label">用户协议</text>
+      <text class="row__value">›</text>
+    </view>
+    <view class="row row--last" data-key="disclaimer" bindtap="showDialog">
+      <text class="row__label">免责声明</text>
+      <text class="row__value">›</text>
+    </view>
+  </view>
+
+  <!-- 关于与反馈 -->
+  <view class="group">关于与反馈</view>
+  <view class="card">
+    <view class="row row--first" data-key="feedback" bindtap="showDialog">
+      <text class="row__label">问题反馈</text>
+      <text class="row__value">›</text>
+    </view>
+    <view class="row row--last">
+      <text class="row__label">版本号</text>
+      <text class="row__value">{{version}}</text>
+    </view>
+  </view>
+
+</view>

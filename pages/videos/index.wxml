@@ -1,0 +1,45 @@
+<!--pages/videos/index.wxml-->
+<view class="page">
+
+  <!-- 自定义返回头 -->
+  <view class="nav">
+    <view class="nav__back" bindtap="goBack">‹</view>
+    <view class="nav__title">我的视频</view>
+    <view class="nav__spacer"></view>
+  </view>
+
+  <!-- 分段 tab：全部 / 动作检测 / 实战 -->
+  <view class="tabs">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="key"
+      class="tab {{active === item.key ? 'tab--on' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="onTabTap"
+    >{{item.label}}</view>
+  </view>
+
+  <!-- 视频列表 -->
+  <view class="list">
+    <view wx:if="{{loading}}" class="empty">加载中…</view>
+    <block wx:elif="{{videos.length}}">
+      <view class="item" wx:for="{{videos}}" wx:key="id">
+        <image wx:if="{{item.thumbUrl}}" class="item__thumb" src="{{item.thumbUrl}}" mode="aspectFill" />
+        <view wx:else class="item__thumb item__thumb--ph">
+          <text class="item__ph">{{item.srcText}}</text>
+        </view>
+        <view class="item__body">
+          <view class="item__title">{{item.title}}</view>
+          <view class="item__meta">
+            <text class="item__tag item__tag--{{item.srcCls}}">{{item.srcText}}</text>
+            <text wx:if="{{item.actionName}}" class="item__tag item__tag--action">{{item.actionName}}</text>
+            <text class="item__time">{{item.timeText}}{{item.durationText ? ' · ' + item.durationText : ''}}</text>
+          </view>
+        </view>
+        <view class="item__badge item__badge--{{item.badgeCls}}">{{item.badgeText}}</view>
+      </view>
+    </block>
+    <view wx:else class="empty">暂无视频</view>
+  </view>
+
+</view>

@@ -77,15 +77,19 @@ CREATE TABLE IF NOT EXISTS `action_correct` (
 CREATE TABLE IF NOT EXISTS `video` (
   `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id`     BIGINT UNSIGNED NOT NULL,
+  `source`      TINYINT NOT NULL DEFAULT 2 COMMENT '1=动作检测 2=实战',
+  `action_type_id` SMALLINT UNSIGNED NULL COMMENT '动作检测对应动作(实战为 NULL)',
   `title`       VARCHAR(128) NULL COMMENT '视频标题',
   `file_key`    VARCHAR(512) NOT NULL COMMENT '对象存储 key/路径',
   `file_url`    VARCHAR(512) NULL COMMENT '可访问 URL',
+  `thumb_url`   VARCHAR(512) NULL COMMENT '缩略图 URL',
   `duration_sec` INT NOT NULL DEFAULT 0 COMMENT '时长(秒)',
   `status`      TINYINT NOT NULL DEFAULT 0 COMMENT '0=处理中 1=完成 2=失败',
   `created_at`  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `idx_user` (`user_id`)
-) ENGINE=InnoDB COMMENT='实战视频';
+  KEY `idx_user` (`user_id`),
+  KEY `idx_user_source` (`user_id`, `source`)
+) ENGINE=InnoDB COMMENT='视频(动作检测/实战共用，source 区分)';
 
 -- -------------------------------------------------------------
 -- 5. 视频动作分析表（实战/AI 分析，预留未来闭环）

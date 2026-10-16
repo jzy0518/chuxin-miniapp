@@ -1,10 +1,19 @@
 {
-  "appid": "wx89665ba93475af78",
+  "appid": "wxc5245a6938cedc38",
   "compileType": "miniprogram",
-  "libVersion": "trial",
+  "libVersion": "3.17.3",
   "isGameTourist": false,
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {
+        "value": "backend",
+        "type": "folder"
+      },
+      {
+        "value": ".workbuddy",
+        "type": "folder"
+      }
+    ],
     "include": []
   },
   "setting": {

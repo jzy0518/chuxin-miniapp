@@ -1,7 +1,7 @@
 // utils/api.js
 // 后端接口统一封装：自动登录、自动带 token、上传进度回调
 // 注意：开发阶段需在微信开发者工具勾选「不校验合法域名」
-const BASE_URL = 'http://127.0.0.1:3000'
+const BASE_URL = 'https://3f5b5448.r29.cpolar.top'
 
 let loginPromise = null // 登录去重：避免并发时重复调 wx.login
 
@@ -32,7 +32,10 @@ function ensureLogin() {
           complete: () => { loginPromise = null },
         })
       },
-      fail: () => reject(new Error('微信登录失败')),
+      fail: () => {
+        loginPromise = null // 登录失败也要清空，否则后续请求会永远拿到这个已拒绝的 Promise
+        reject(new Error('微信登录失败'))
+      },
     })
   })
   return loginPromise
@@ -74,6 +77,11 @@ function uploadVideo(filePath, formData, onProgress) {
         formData,
         header: { Authorization: 'Bearer ' + token },
         success: (r) => {
+          if (r.statusCode === 401) {
+            wx.removeStorageSync('token')
+            reject(new Error('登录已过期，请重试'))
+            return
+          }
           let data = null
           try { data = JSON.parse(r.data) } catch (e) { /* 忽略解析错误 */ }
           if (data && data.code === 0) resolve(data.data)
@@ -94,9 +102,56 @@ function submitAnalysis(videoId, actionTypeId) {
   return request('POST', '/api/analysis', { videoId, actionTypeId: actionTypeId || null })
 }
 
-// 我的视频列表（每条带最新分析状态 analysis: {status, score} | null）
-function listVideos() {
-  return request('GET', '/api/videos')
+// 我的视频列表（source: 1=动作检测 2=实战，不传=全部；每条带最新分析状态 analysis: {status, score} | null）
+function listVideos(source) {
+  const q = source ? '?source=' + source : ''
+  return request('GET', '/api/videos' + q)
+}
+
+// 上传视频缩略图（微信 chooseMedia 返回的 thumbTempFilePath）
+function uploadVideoThumb(videoId, filePath) {
+  return ensureLogin().then(({ token }) => {
+    return new Promise((resolve, reject) => {
+      wx.uploadFile({
+        url: BASE_URL + '/api/videos/' + videoId + '/thumb',
+        filePath,
+        name: 'thumb',
+        header: { Authorization: 'Bearer ' + token },
+        success: (r) => {
+          if (r.statusCode === 401) {
+            wx.removeStorageSync('token')
+            reject(new Error('登录已过期，请重试'))
+            return
+          }
+          let data = null
+          try { data = JSON.parse(r.data) } catch (e) { /* 忽略解析错误 */ }
+          if (data && data.code === 0) resolve(data.data)
+          else reject(new Error((data && data.msg) || '缩略图上传失败'))
+        },
+        fail: () => reject(new Error('缩略图上传失败，请检查网络')),
+      })
+    })
+  })
+}
+
+// 视频统计：{ detect, battle, total }
+function videoStats() {
+  return request('GET', '/api/videos/stats')
+}
+
+// 清空我的数据：删除当前账号下所有视频与分析报告
+function clearAllData() {
+  return request('DELETE', '/api/videos/all')
+}
+
+// 我的报告列表（按动作类型分组）：[{ actionTypeId, actionName, category, count, reports:[...] }]
+function listReports() {
+  return request('GET', '/api/reports')
+}
+
+// 报告详情：{ id, videoId, actionName, score, date, videoUrl, thumbUrl, durationSec, corrects:[...] }
+function getReport(id) {
+  return request('GET', '/api/reports/' + id)
 }
 
 // 查询分析任务状态：0 排队中 / 1 完成 / 2 失败（完成时带 score 和 resultJson）
@@ -114,6 +169,11 @@ function uploadAvatar(filePath) {
         name: 'avatar',
         header: { Authorization: 'Bearer ' + token },
         success: (r) => {
+          if (r.statusCode === 401) {
+            wx.removeStorageSync('token')
+            reject(new Error('登录已过期，请重试'))
+            return
+          }
           let data = null
           try { data = JSON.parse(r.data) } catch (e) { /* 忽略解析错误 */ }
           if (data && data.code === 0) resolve(data.data)
@@ -131,4 +191,4 @@ function logout() {
   wx.removeStorageSync('userInfo')
 }
 
-module.exports = { BASE_URL, ensureLogin, request, uploadVideo, uploadAvatar, listVideos, submitAnalysis, getAnalysis, logout }
+module.exports = { BASE_URL, ensureLogin, request, uploadVideo, uploadAvatar, uploadVideoThumb, listVideos, videoStats, clearAllData, listReports, getReport, submitAnalysis, getAnalysis, logout }

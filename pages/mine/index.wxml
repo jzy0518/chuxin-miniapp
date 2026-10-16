@@ -1,34 +1,200 @@
 <!--pages/mine/index.wxml-->
 <view class="page">
-  <!-- 未登录 -->
+
+  <!-- ========== 未登录 · 档案解锁 ========== -->
   <block wx:if="{{!loggedIn}}">
     <view class="login">
-      <view class="login__icon">👤</view>
-      <view class="login__text">登录后同步你的技术档案</view>
-      <button class="btn btn--primary" bindtap="login">微信一键登录</button>
+      <!-- 英雄卡：徽标/标题/预览图谱合为一体，消除顶部空白区 -->
+      <view class="login__hero">
+        <view class="login__top">
+          <view class="login__badge"><view class="login__badge-dot"></view>档案未同步</view>
+          <view class="login__brand">羽毛球动作纠正</view>
+        </view>
+        <view class="login__title">登录，解锁你的纠正档案</view>
+        <view class="login__benefits">报告云端同步 · 趋势对比 · 证据点回看</view>
+        <view class="login__divider"></view>
+
+        <!-- 预览报告：人体图谱 + 扫描线（小程序无 backdrop-filter，用内容直显代替磨砂） -->
+        <view class="login__body">
+          <view class="figure">
+            <view class="figure__dot" style="left: 62.8%; top: 20.5%; background: #f5a623;"></view>
+            <view class="figure__dot" style="left: 72.8%; top: 32.1%; background: #d9483c;"></view>
+            <view class="figure__dot" style="left: 56%; top: 66.7%; background: #f2c94c;"></view>
+          </view>
+          <view class="login__scanline"></view>
+        </view>
+
+        <!-- 锁定贴片（底色与锁图标分层，避免渲染异常） -->
+        <view class="login__lockpill">
+          <view class="login__lock"><view class="login__lock-icon"></view></view>
+          <text class="login__lockpill-text">登录解锁完整报告</text>
+        </view>
+      </view>
+
+      <button class="btn btn--primary login__cta" bindtap="login">微信一键登录</button>
+      <view class="login__ghost" bindtap="goDetect">先去拍一段试试 ›</view>
+      <view class="login__loop">拍一段 · 出报告 · 看见问题</view>
     </view>
   </block>
 
-  <!-- 已登录 -->
+  <!-- ========== 已登录 ========== -->
   <block wx:else>
-    <view class="user">
-      <!-- 微信官方头像组件：点击选择头像 -->
-      <button class="user__avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-        <image wx:if="{{user.avatarUrl}}" class="user__avatar" src="{{user.avatarUrl}}" mode="aspectFill" />
-        <view wx:else class="user__avatar user__avatar--empty">＋</view>
-      </button>
-      <!-- 微信官方昵称组件：点击输入昵称，失焦自动保存 -->
-      <input
-        class="user__nick-input"
-        type="nickname"
-        value="{{user.nickName}}"
-        placeholder="点击设置昵称"
-        bindinput="onNickInput"
-        bindblur="onNickSave"
-      />
-      <view class="user__hint">点头像换头像 · 点昵称改名</view>
+
+    <!-- 沉浸式品牌头部：渐变底 + 头像昵称 + 白色记分牌悬浮卡 -->
+    <view class="hero">
+      <view class="head">
+        <!-- 微信官方头像组件：点击选择头像 -->
+        <button class="head__avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <image wx:if="{{user.avatarUrl}}" class="head__avatar" src="{{user.avatarUrl}}" mode="aspectFill" />
+          <view wx:else class="head__avatar head__avatar--empty">＋</view>
+        </button>
+        <view class="head__info">
+          <!-- 微信官方昵称组件：点击输入昵称，失焦自动保存 -->
+          <input
+            class="head__nick"
+            type="nickname"
+            value="{{user.nickName}}"
+            placeholder="点击设置昵称"
+            placeholder-class="head__placeholder"
+            bindinput="onNickInput"
+            bindblur="onNickSave"
+          />
+          <view class="head__sync">纠正档案 · 已同步云端</view>
+        </view>
+      </view>
+
+      <!-- 记分牌：白色悬浮卡，压在渐变头部上 -->
+      <view class="score">
+        <view class="score__cell">
+          <view class="score__num">{{score.found}}</view>
+          <view class="score__label">发现问题</view>
+        </view>
+        <view class="score__div"></view>
+        <view class="score__cell">
+          <view class="score__num score__num--good">{{score.resolved}}</view>
+          <view class="score__label">已改善</view>
+        </view>
+        <view class="score__div"></view>
+        <view class="score__cell">
+          <view class="score__num score__num--brand">{{score.rate}}%</view>
+          <view class="score__label">改善率</view>
+        </view>
+      </view>
     </view>
-    <view class="login__text">已纠正 {{stats.done}} · 待纠正 {{stats.todo}} · 视频 {{stats.videos}}</view>
-    <button class="btn btn--logout" bindtap="logout">退出登录</button>
+
+    <!-- 最新报告焦点卡：一句话总结 + 人体问题部位图谱 + 问题点列表 -->
+    <view class="card focus" wx:if="{{latestReport}}">
+      <view class="focus__head" bindtap="onOpenReport" data-id="{{latestReport.report_id}}">
+        <view class="focus__titles">
+          <view class="focus__title">
+            <text class="focus__tag">{{latestReport.action}}</text>
+            <text class="focus__date">{{latestReport.detected_at}}</text>
+          </view>
+          <view class="focus__caption">最新报告</view>
+        </view>
+        <view class="focus__more">查看详情 ›</view>
+      </view>
+
+      <view class="focus__summary">{{latestReport.summary}}</view>
+
+      <view class="focus__grid">
+        <!-- 人体剪影 + 问题热点（高危带脉冲，序号对应下方列表） -->
+        <view class="figure">
+          <view
+            wx:for="{{issues}}"
+            wx:for-index="idx"
+            wx:key="issueId"
+            class="figure__dot figure__dot--{{item.severity}} {{item.dim ? 'figure__dot--dim' : ''}}"
+            style="left: {{item.left}}; top: {{item.top}}; background: {{item.sev.color}};"
+          >
+            <text class="figure__dot-num">{{idx + 1}}</text>
+          </view>
+        </view>
+
+        <!-- 图例 + 部位筛选 -->
+        <view class="focus__side">
+          <view class="legend">
+            <view class="legend__row" wx:for="{{legend}}" wx:key="key">
+              <view class="legend__dot" style="background: {{item.color}}"></view>
+              <text class="legend__text">{{item.label}} · {{item.count}}处</text>
+            </view>
+          </view>
+          <view class="focus__total">{{latestReport.posTotal}} · 较上次 {{latestReport.posDelta}}</view>
+        </view>
+      </view>
+
+      <!-- 部位筛选：整行排列在人体图谱下方 -->
+      <view class="chips">
+        <view
+          wx:for="{{filterGroups}}"
+          wx:key="*this"
+          class="chip {{activeGroup === item ? 'chip--on' : ''}}"
+          data-key="{{item}}"
+          bindtap="onFilterTap"
+        >{{item}}</view>
+      </view>
+
+      <!-- 问题点列表：默认只显示最优先的几条，其余折叠展开 -->
+      <view class="issues">
+        <view class="issue {{index === 0 ? 'issue--first' : ''}}" wx:for="{{visibleIssues}}" wx:key="issueId">
+          <view class="issue__bar" style="background: {{item.sev.color}}"></view>
+          <view class="issue__body">
+            <view class="issue__text">{{item.text}}</view>
+            <view class="issue__meta">{{item.partLabel}} · {{item.phase}}</view>
+          </view>
+          <view
+            class="issue__time"
+            data-id="{{latestReport.report_id}}"
+            data-t="{{item.t}}"
+            bindtap="onTimeTap"
+          >{{item.tText}}</view>
+        </view>
+      </view>
+
+      <!-- 展开/收起全部问题（改善追踪已移至报告详情页展示） -->
+      <view class="focus__expand" wx:if="{{issueTotal > 2}}" bindtap="onToggleIssues">
+        <text>{{issuesCollapsed ? '查看全部 ' + issueTotal + ' 条问题' : '收起'}}</text>
+        <view class="focus__expand-arrow">{{issuesCollapsed ? '▾' : '▴'}}</view>
+      </view>
+    </view>
+
+    <!-- 历史报告 -->
+    <view class="card history">
+      <view class="history__title">历史报告</view>
+      <view
+        class="history__row {{index === 0 ? 'history__row--first' : ''}}"
+        wx:for="{{history}}"
+        wx:key="report_id"
+        data-id="{{item.report_id}}"
+        bindtap="onOpenReport"
+      >
+        <view class="history__dot"></view>
+        <view class="history__main">
+          <view class="history__name">{{item.action}}</view>
+          <view class="history__meta">{{item.detected_at}} · {{item.issueCount}}个问题{{item.parts ? ' · ' + item.parts : ''}}</view>
+        </view>
+        <view class="history__delta history__delta--{{item.deltaClass}}">{{item.deltaText}}</view>
+        <view class="history__arrow">›</view>
+      </view>
+    </view>
+
+    <!-- 功能列表 -->
+    <view class="card menu">
+      <view class="menu__row menu__row--first" data-key="videos" bindtap="onMenuTap">
+        <view class="menu__icon menu__icon--video"></view>
+        <text class="menu__label">我的视频</text>
+        <text class="menu__value">{{stats.videos}} ›</text>
+      </view>
+      <view class="menu__row" data-key="share" bindtap="onMenuTap">
+        <view class="menu__icon menu__icon--share"></view>
+        <text class="menu__label">我的报告</text>
+        <text class="menu__value">›</text>
+      </view>
+      <view class="menu__row" data-key="settings" bindtap="onMenuTap">
+        <view class="menu__icon menu__icon--settings"></view>
+        <text class="menu__label">设置</text>
+        <text class="menu__value">›</text>
+      </view>
+    </view>
   </block>
 </view>

@@ -1,0 +1,51 @@
+<!--pages/reports/index.wxml-->
+<view class="page">
+
+  <!-- 自定义返回头 -->
+  <view class="nav">
+    <view class="nav__back" bindtap="goBack">‹</view>
+    <view class="nav__title">我的报告</view>
+    <view class="nav__spacer"></view>
+  </view>
+
+  <!-- 空态 -->
+  <view class="empty" wx:if="{{!loading && groups.length === 0}}">
+    <view class="empty__icon">报</view>
+    <view class="empty__title">还没有诊断报告</view>
+    <view class="empty__sub">拍一段挥拍视频并完成分析后，报告会按动作自动归档到这里</view>
+  </view>
+
+  <!-- 分组列表 -->
+  <block wx:for="{{groups}}" wx:key="actionTypeId" wx:for-item="g">
+    <view class="group">
+      <view class="group__head">
+        <text class="group__name">{{g.actionName}}</text>
+        <text class="group__count">{{g.count}} 份</text>
+      </view>
+
+      <view
+        class="report {{rIdx === 0 ? 'report--first' : ''}}"
+        wx:for="{{g.reports}}"
+        wx:for-item="r"
+        wx:for-index="rIdx"
+        wx:key="id"
+        data-id="{{r.id}}"
+        bindtap="onOpen"
+      >
+        <image wx:if="{{r.thumbUrl}}" class="report__thumb" src="{{r.thumbUrl}}" mode="aspectFill" />
+        <view wx:else class="report__thumb report__thumb--empty">报</view>
+
+        <view class="report__main">
+          <view class="report__name">{{r.dateText}}</view>
+          <view class="report__meta">{{r.issueCount}} 个问题点</view>
+        </view>
+
+        <view class="report__score">
+          <text class="report__score-num">{{r.score}}</text>
+          <text class="report__score-label">分</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+</view>

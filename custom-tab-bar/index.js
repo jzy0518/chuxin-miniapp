@@ -10,7 +10,7 @@ Component({
   },
   methods: {
     switchTab(e) {
-      const index = e.currentTarget.dataset.index
+      const index = Number(e.currentTarget.dataset.index)
       const item = this.data.list[index]
       if (index === this.data.selected) return
       wx.switchTab({

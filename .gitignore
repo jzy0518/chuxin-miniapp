@@ -17,3 +17,9 @@ logs/
 # 系统文件
 .DS_Store
 Thumbs.db
+
+# WorkBuddy 项目数据（记忆与临时文件，不入库）
+.workbuddy/
+
+# 本地网络测试二维码（含本机局域网 IP）
+net-test-qr.png

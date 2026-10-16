@@ -3,20 +3,86 @@
   <!-- 自定义返回头 -->
   <view class="nav">
     <view class="nav__back" bindtap="goBack">‹</view>
-    <view class="nav__title">{{actionName}} · 上传</view>
+    <view class="nav__title">{{actionName}} · {{status === 'done' ? '结果' : '上传'}}</view>
     <view class="nav__spacer"></view>
   </view>
 
-  <!-- 可折叠拍摄说明（内容在 index.js 的 tips 里修改） -->
-  <view class="tips">
-    <view class="tips__header" bindtap="toggleTips">
-      <view class="tips__title">拍摄说明</view>
-      <view class="tips__arrow {{tipsExpanded ? 'tips__arrow--open' : ''}}">▾</view>
+  <!-- 上传前/上传中：拍摄说明 -->
+  <block wx:if="{{status !== 'done'}}">
+    <!-- 可折叠拍摄说明（内容在 index.js 的 tips 里修改） -->
+    <view class="tips">
+      <view class="tips__header" bindtap="toggleTips">
+        <view class="tips__title">拍摄说明</view>
+        <view class="tips__arrow {{tipsExpanded ? 'tips__arrow--open' : ''}}">▾</view>
+      </view>
+      <view class="tips__body" wx:if="{{tipsExpanded}}">
+        <view class="tips__line" wx:for="{{tips}}" wx:key="*this">{{item}}</view>
+      </view>
     </view>
-    <view class="tips__body" wx:if="{{tipsExpanded}}">
-      <view class="tips__line" wx:for="{{tips}}" wx:key="*this">{{item}}</view>
+  </block>
+
+  <!-- 上传完成：视频回看 + 报告 -->
+  <block wx:if="{{status === 'done'}}">
+
+    <!-- 视频回看 -->
+    <view class="result-video" wx:if="{{videoUrl}}">
+      <video
+        id="actionVideo"
+        class="result-video__el"
+        src="{{videoUrl}}"
+        poster="{{thumbUrl}}"
+        controls
+      ></video>
     </view>
-  </view>
+
+    <!-- 报告区：加载中 -->
+    <view class="report-empty" wx:if="{{reportStatus === 'loading'}}">加载报告…</view>
+
+    <!-- 报告区：已完成 -->
+    <block wx:if="{{reportStatus === 'done' && report}}">
+      <view class="score-card">
+        <view class="score-card__action">{{report.actionName}}<text wx:if="{{report.category}}"> · {{report.category}}</text></view>
+        <view class="score-card__date">生成于 {{report.dateText}}</view>
+        <view class="score-card__score">
+          <text class="score-card__num">{{report.score}}</text>
+          <text class="score-card__unit">分</text>
+        </view>
+      </view>
+
+      <view class="list-card">
+        <view class="list-card__title">纠正点 · {{corrects.length}}</view>
+        <view
+          class="point {{index === 0 ? 'point--first' : ''}}"
+          wx:for="{{corrects}}"
+          wx:key="idx"
+          data-t="{{item.t}}"
+          bindtap="onTimeTap"
+        >
+          <view class="point__status {{item.correct ? 'point__status--ok' : 'point__status--bad'}}">{{item.correct ? '✓' : '✕'}}</view>
+          <view class="point__main">
+            <view class="point__name">{{item.pointName}}</view>
+            <view class="point__meta">置信度 {{item.confidenceText}}</view>
+          </view>
+          <view class="point__time">{{item.tText}} ›</view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 报告区：生成中 -->
+    <view class="report-empty" wx:if="{{reportStatus === 'pending'}}">
+      <view class="report-empty__title">报告生成中</view>
+      <view class="report-empty__sub">AI 正在后台分析，稍后自动刷新，也可点下方按钮</view>
+    </view>
+
+    <!-- 报告区：暂无 / 失败 -->
+    <view class="report-empty" wx:if="{{reportStatus === 'none' || reportStatus === 'failed'}}">
+      <view class="report-empty__title">{{reportStatus === 'failed' ? '报告生成失败' : '暂无报告'}}</view>
+      <view class="report-empty__sub">{{reportStatus === 'failed' ? '分析未完成，点击下方刷新重试' : '报告生成后会自动展示在这里'}}</view>
+    </view>
+
+    <!-- 刷新报告 -->
+    <view class="refresh" wx:if="{{reportStatus !== 'done' && reportStatus !== 'loading'}}" bindtap="refreshReport">刷新报告</view>
+  </block>
 
   <!-- 底部固定上传区 -->
   <view class="footer">
@@ -31,8 +97,8 @@
     </block>
 
     <block wx:else>
-      <view class="footer__done">✓ 上传完成，已加入 AI 分析队列</view>
-      <view class="footer__tip">结果页即将上线，可返回选择其他动作</view>
+      <view class="footer__btn" bindtap="reset">重新上传</view>
+      <view class="footer__tip">上传新视频将重新生成报告</view>
     </block>
   </view>
 </view>

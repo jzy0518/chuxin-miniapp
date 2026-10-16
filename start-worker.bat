@@ -2,6 +2,8 @@
 chcp 65001 >nul
 title chuxin AI 分析 worker
 cd /d "%~dp0backend\ai_worker"
+rem 上传目录与后端一致（移到小程序项目外），避免上传视频触发小程序热重载重启
+set "UPLOAD_DIR=E:\chuxin_uploads"
 echo ============================================
 echo  启动 chuxin AI 分析 worker（轮询分析任务）
 echo  关闭本窗口即停止

@@ -17,6 +17,7 @@ app.use('/api', require('./routes/user'))
 app.use('/api', require('./routes/action'))
 app.use('/api', require('./routes/analysis'))
 app.use('/api', require('./routes/video'))
+app.use('/api', require('./routes/report'))
 
 // 健康检查
 app.get('/api/health', (req, res) => res.json({ code: 0, msg: 'ok', time: new Date().toISOString() }))

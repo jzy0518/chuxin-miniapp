@@ -1,12 +1,35 @@
 # chuxin 羽毛球动作纠正小程序
 
-羽毛球技术纠正小程序：上传挥拍视频 → AI 分析动作错误 → 记录与跟踪纠正进度。
+羽毛球动作纠正小程序：上传挥拍视频 → AI 分析动作问题 → 输出**纠正报告档案**，帮用户快速定位自身动作问题。
 
-三个 tab：
+**产品定位：只诊断，不教学。** 本应用仅提供动作问题诊断报告，不提供纠正教学内容；用户依据报告自行完成纠正。
 
-- **动作纠正**：按动作（高远球/杀球/吊球/网前/步法等）管理纠正点，记录已纠正/待纠正进度
-- **实战**：从相册上传挥拍视频，自动进入 AI 分析队列，查看历史视频与分析状态
-- **我的**：微信登录、头像昵称、纠正统计与技术画像
+## 功能与页面
+
+底部三个 tab（自定义 tabBar）：
+
+| Tab | 页面 | 说明 |
+|---|---|---|
+| 动作检测 | `pages/train/index` | 动作分类列表（正手高远球 / 反手高远 / 杀球 / 吊球 / 挑球 / 放网），点击进入上传检测页 |
+| 实战 | `pages/battle/index` | 从相册上传挥拍视频 → 自动进入 AI 分析队列，查看历史视频与最新分析状态 |
+| 我的 | `pages/mine/index` | 微信登录、头像昵称、**纠正报告档案**（最新报告卡 + 问题部位人体图谱 + 改善追踪 + 历史报告） |
+
+非 tab 页面：
+
+- `pages/action/index` — 上传检测页：选视频上传 + 拍摄说明；上传成功后**页内原地展示视频回看 + 报告**（不跳转，规避开发者工具路由渲染问题），分析在后台静默提交、可手动/自动刷新
+- `pages/report/detail` — 报告详情页（历史报告直出：得分 + 纠正点 + 视频回看，路由 `?report_id=xxx&t=xx`）
+
+### 「我的」页 · 纠正报告档案
+
+以动作为核心的纠正报告档案，聚焦「快速定位动作问题」：
+
+- **最新报告卡**：动作名、检测日期、一句话问题总结
+- **问题部位人体图谱**：剪影 + 热点标注，支持按部位（肘/腕、右肩、膝/步法）筛选
+- **问题列表**：按严重程度排序（高危 / 注意 / 轻微），每条带证据时间点
+- **改善追踪卡**：对比上次报告，展示已解决 / 待解决 / 新增问题数
+- **历史报告列表**：点击进入报告详情
+
+> 报告详情页当前为骨架，核心交互是「点击问题时间点跳转回看对应视频片段」，待后端报告接口（标准报告 JSON 契约）定型后实现。
 
 ## 技术栈
 
@@ -37,18 +60,26 @@ Python worker（轮询任务 → 调你的模型推理 → 回调后端落库）
 
 ```
 chuxin-Frontend/
-├── pages/              小程序页面（train/correct/battle/mine ...）
-├── utils/api.js        前端接口封装（BASE_URL 在这里改）
-├── app.js / app.json   小程序入口与配置
-├── project.config.json 小程序项目配置（appid 在这里改）
+├── pages/                    小程序页面
+│   ├── train/               动作检测（动作列表）
+│   ├── action/              上传检测页
+│   ├── battle/              实战（上传 + 历史列表）
+│   ├── mine/                我的（纠正报告档案）
+│   └── report/detail        报告详情页
+├── custom-tab-bar/           自定义底部 tabBar
+├── utils/api.js              前端接口封装（BASE_URL 在这里改）
+├── app.js / app.json        小程序入口与页面配置
+├── project.config.json      小程序项目配置（appid 在这里改）
 └── backend/
-    ├── src/            Express 应用与路由
-    ├── db/schema.sql   建库建表脚本（幂等，可重复执行）
-    ├── ai_worker/      Python 推理 worker（接模型只改这里）
-    ├── test-api.js     接口回归测试（13 项）
-    ├── .env.example    配置模板（复制为 .env 后修改）
+    ├── src/                 Express 应用、路由、鉴权中间件
+    ├── db/schema.sql        建库建表脚本（幂等，可重复执行）
+    ├── ai_worker/           Python 推理 worker（接模型只改这里）
+    ├── test-api.js          接口回归测试（13 项）
+    ├── .env.example         配置模板（复制为 .env 后修改）
     └── package.json
 ```
+
+> `pages/correct/`、`pages/index/`、`pages/logs/`、`components/navigation-bar/` 为历史遗留文件，已在 2026-10-16 清理移除。
 
 ## 环境要求
 
@@ -119,15 +150,15 @@ python worker.py
 
 ## 接入自己的模型（核心）
 
-只改一个文件、一个函数：`backend/ai_worker/worker.py` → `analyze_video(video_path)`。
+只改一个文件、一个函数：`backend/ai_worker/worker.py` → `analyze_video(video_path, task)`。
 
 ```python
-def analyze_video(video_path: str) -> dict:
+def analyze_video(video_path: str, task: dict) -> dict:
     # TODO: 在这里加载你的权重、推理
     return {
         "score": 86,                    # 必须：0-100 的总分
         "corrects": [                   # 可选：识别出的纠正点
-            {"pointName": "架拍过高", "correct": False, "confidence": 0.92},
+            {"pointName": "架拍过高", "correct": False, "confidence": 0.92, "frameTime": 5.2},
         ],
         "model": "your-model-v1",       # 模型标识，方便追踪
         "raw": {},                      # 可选：原始输出，原样存库
@@ -137,7 +168,7 @@ def analyze_video(video_path: str) -> dict:
 - worker 自动轮询排队任务、定位视频文件（同机读取 `backend/uploads/`）、回调后端落库
 - 推理抛异常时任务自动标记失败，不会卡死队列
 - 依赖装进 `ai_worker/requirements.txt`（如 torch / onnxruntime）
-- 回调密钥：`.env` 的 `ANALYSIS_WORKER_KEY` 必须与 worker 使用的一致（默认两端都是 `chuxin-worker-dev-key`，改了要同步）
+- 回调密钥：`.env` 的 `ANALYSIS_WORKER_KEY` 必须与 worker 使用的一致（两端要同步）
 
 ## .env 配置说明
 
@@ -147,7 +178,7 @@ def analyze_video(video_path: str) -> dict:
 | DB_HOST / DB_PORT / DB_USER / DB_PASSWORD / DB_NAME | MySQL 连接 | 127.0.0.1:3306 chuxin/chuxin123 |
 | JWT_SECRET | JWT 签名密钥，部署时务必改随机串 | — |
 | WX_APPID / WX_SECRET | 微信登录。**WX_SECRET 留空 = mock 登录**（无需任何微信配置即可跑通全流程）；填上即真实登录 | — |
-| ANALYSIS_WORKER_KEY | worker 回调密钥，两端一致 | chuxin-worker-dev-key |
+| ANALYSIS_WORKER_KEY | worker 回调密钥，两端一致 | — |
 | UPLOAD_MAX_MB | 视频上传大小上限(MB)，可选 | 200 |
 
 ## 常见问题
@@ -169,3 +200,15 @@ mysqldump -u chuxin -pchuxin123 chuxin > chuxin_backup_$(date +%F).sql
 ```
 
 项目内另附 `backend/scripts/backup-db.ps1`（Windows 一键备份，自动保留最近 30 份，双击 `backup-db.bat` 生效）。
+
+## 更新记录
+
+> 后续每次改动在上方追加一条，格式：`日期 · 类型 · 简述`。类型约定为 `feat`（新功能）/ `fix`（修复）/ `ui`（界面）/ `refactor`（重构）/ `docs`（文档）。
+
+- 2026-10-16 · fix · 修复「上传视频后小程序重启回首页」：上传视频写入项目内的 `backend/uploads` 会触发开发者工具热重载/重新编译导致小程序重启，已将上传目录移到项目外 `E:/chuxin_uploads`（后端 `.env` 与 `start-worker.bat` 均设 `UPLOAD_DIR`），现有视频已迁移
+- 2026-10-16 · refactor · 动作检测上传后改为**页内原地展示视频+报告**（`pages/action/index` 内完成，不再跳转新页面），彻底规避开发者工具在 custom tabBar 下的 redirectTo/navigateTo 渲染层 bug；分析后台静默提交，报告 pending 时自动重查（最多 3 次）+ 手动刷新；移除 `report/video` 页
+- 2026-10-16 · fix · 修复报告页「重新分析」失效、登录失败后请求卡死、自定义 tabBar 防重判断失效、上传接口缺 401 处理、轮询超时误报失败等 BUG；清理未注册的遗留页面与 navigation-bar 组件
+- 2026-10-15 · feat · 「我的」页重构为「纠正报告档案」（只诊断不教学）：最新报告卡 + 问题部位人体图谱 + 改善追踪 + 历史报告；新增报告详情页骨架并注册路由（`pages/report/detail`）
+- 2026-10-14 · ui · 动作列表图标替换为球场轨迹图；上传页改版（底部固定上传按钮 + 顶部可折叠拍摄说明）
+- 2026-10-14 · refactor · 动作列表收敛为 6 项动作、下线纠正点管理页入口，点击动作直达上传检测页
+- 更早 · 见 git 提交历史（后端接口全链路、AI 分析 worker、登录鉴权、一键启动脚本、数据库备份脚本等）
